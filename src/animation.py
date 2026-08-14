@@ -213,14 +213,12 @@ goal_marker, = ax.plot(
     zorder=20
 )
 
-
 # ============================================================
 # PATHS
 # ============================================================
 
 astar_line, = ax.plot(
-    [],
-    [],
+    [], [],
     "--",
     color=C["astar"],
     linewidth=2.0,
@@ -229,8 +227,7 @@ astar_line, = ax.plot(
 )
 
 true_trail, = ax.plot(
-    [],
-    [],
+    [], [],
     "-",
     color=C["true"],
     linewidth=3.0,
@@ -238,8 +235,7 @@ true_trail, = ax.plot(
 )
 
 dead_trail, = ax.plot(
-    [],
-    [],
+    [], [],
     "-",
     color=C["dr"],
     linewidth=1.8,
@@ -248,8 +244,7 @@ dead_trail, = ax.plot(
 )
 
 kalman_trail, = ax.plot(
-    [],
-    [],
+    [], [],
     "-.",
     color=C["kalman"],
     linewidth=2.0,
@@ -257,14 +252,17 @@ kalman_trail, = ax.plot(
     zorder=9
 )
 
+# Hide all trajectory lines until the robot starts moving
+true_trail.set_visible(False)
+dead_trail.set_visible(False)
+kalman_trail.set_visible(False)
+
 # ============================================================
 # ROBOT MARKERS
 # ============================================================
 
 true_robot, = ax.plot(
-    [],
-    [],
-    marker="o",
+    [], [], marker="o",
     markersize=8,
     color=C["true"],
     linestyle="None",
@@ -272,9 +270,7 @@ true_robot, = ax.plot(
 )
 
 dead_robot, = ax.plot(
-    [],
-    [],
-    marker="o",
+    [], [], marker="o",
     markersize=6,
     color=C["dr"],
     linestyle="None",
@@ -282,14 +278,17 @@ dead_robot, = ax.plot(
 )
 
 kalman_robot, = ax.plot(
-    [],
-    [],
-    marker="s",
+    [], [], marker="s",
     markersize=6,
     color=C["kalman"],
     linestyle="None",
     zorder=19
 )
+
+# Keep all robot markers hidden until movement begins
+true_robot.set_visible(False)
+dead_robot.set_visible(False)
+kalman_robot.set_visible(False)
 
 
 # ============================================================
@@ -299,15 +298,17 @@ kalman_robot, = ax.plot(
 obstacle_markers = []
 
 for _ in obstacle_centers:
+
     marker, = ax.plot(
-        [],
-        [],
+        [], [],
         marker="o",
         markersize=18,
         color=C["obstacle"],
         linestyle="None",
         zorder=18
     )
+
+    marker.set_visible(False)
     obstacle_markers.append(marker)
 
 
@@ -318,15 +319,17 @@ for _ in obstacle_centers:
 replan_markers = []
 
 for _ in replanning_points:
+
     marker, = ax.plot(
-        [],
-        [],
+        [], [],
         marker="^",
         markersize=8,
         color=C["replan"],
         linestyle="None",
         zorder=19
     )
+
+    marker.set_visible(False)
     replan_markers.append(marker)
 
 
@@ -613,7 +616,6 @@ def artists():
 # ============================================================
 # ANIMATION UPDATE
 # ============================================================
-
 def update(frame):
 
     # --------------------------------------------------------
@@ -621,6 +623,21 @@ def update(frame):
     # --------------------------------------------------------
 
     if frame < PATH_DRAW_FRAMES:
+
+        # Keep all future navigation elements hidden
+        true_robot.set_visible(False)
+        dead_robot.set_visible(False)
+        kalman_robot.set_visible(False)
+
+        true_trail.set_visible(False)
+        dead_trail.set_visible(False)
+        kalman_trail.set_visible(False)
+
+        for marker in obstacle_markers:
+            marker.set_visible(False)
+
+        for marker in replan_markers:
+            marker.set_visible(False)
 
         points = max(
             1,
@@ -658,6 +675,21 @@ def update(frame):
         + PAUSE_FRAMES
     ):
 
+        # Keep navigation elements hidden
+        true_robot.set_visible(False)
+        dead_robot.set_visible(False)
+        kalman_robot.set_visible(False)
+
+        true_trail.set_visible(False)
+        dead_trail.set_visible(False)
+        kalman_trail.set_visible(False)
+
+        for marker in obstacle_markers:
+            marker.set_visible(False)
+
+        for marker in replan_markers:
+            marker.set_visible(False)
+
         astar_line.set_data(
             planned_path[:, 0],
             planned_path[:, 1]
@@ -667,11 +699,24 @@ def update(frame):
             "PATH PLANNED"
         )
 
+        status_text.set_color(
+            C["astar"]
+        )
+
         return artists()
 
     # --------------------------------------------------------
-    # ROBOT PROGRESS
+    # PHASE 2 — ROBOT MOVEMENT
     # --------------------------------------------------------
+
+    # Reveal navigation elements only after A* planning
+    true_robot.set_visible(True)
+    dead_robot.set_visible(True)
+    kalman_robot.set_visible(True)
+
+    true_trail.set_visible(True)
+    dead_trail.set_visible(True)
+    kalman_trail.set_visible(True)
 
     robot_frame = (
         frame
@@ -765,7 +810,7 @@ def update(frame):
         kalman_path[:kf_index + 1, 1]
     )
 
-    # --------------------------------------------------------
+        # --------------------------------------------------------
     # DYNAMIC OBSTACLES
     # --------------------------------------------------------
 
@@ -784,6 +829,8 @@ def update(frame):
                 [y]
             )
 
+            marker.set_visible(True)
+
             obstacle_count += 1
 
         else:
@@ -792,6 +839,9 @@ def update(frame):
                 [],
                 []
             )
+
+            marker.set_visible(False)
+
 
     # --------------------------------------------------------
     # REPLANNING POINTS
@@ -809,6 +859,8 @@ def update(frame):
                 [],
                 []
             )
+
+            marker.set_visible(False)
 
             continue
 
@@ -841,6 +893,8 @@ def update(frame):
                 [point[1]]
             )
 
+            marker.set_visible(True)
+
             completed_replans += 1
 
         else:
@@ -849,6 +903,8 @@ def update(frame):
                 [],
                 []
             )
+
+            marker.set_visible(False)
 
     # --------------------------------------------------------
     # LOCALIZATION ERROR
@@ -977,6 +1033,13 @@ animation = FuncAnimation(
     interval=INTERVAL,
     blit=True,
     repeat=False
+)
+
+# Save animation for GitHub
+animation.save(
+    "results/mumt_navigation.gif",
+    writer="pillow",
+    fps=15
 )
 
 plt.show()
