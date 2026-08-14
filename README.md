@@ -16,6 +16,40 @@ The project demonstrates how a robot can navigate through a partially occupied e
 
 ---
 
+## 📊 Visual Results
+
+### 1. Occupancy Grid
+
+![Occupancy Grid](results/01_occupancy_grid.png)
+
+The generated 2D occupancy grid represents the environment used for autonomous navigation.
+
+### 2. A* Global Path Planning
+
+![A* Global Path](results/02_a_star_path.png)
+
+The A* planner generates an initial collision-free path from the start position to the goal.
+
+### 3. Dead-Reckoning Localization
+
+![Dead-Reckoning Localization](results/03_dead_reckoning.png)
+
+Dead reckoning estimates the robot position while demonstrating the accumulated localization drift during navigation.
+
+### 4. Kalman Filter Localization
+
+![Kalman Filter Localization](results/04_kalman_filter.png)
+
+The Kalman filter reduces the localization error by providing a more stable position estimate.
+
+### 5. Dynamic Obstacle Detection and Sequential Replanning
+
+![Dynamic Replanning](results/05_dynamic_replanning.png)
+
+Dynamic obstacles are introduced sequentially, triggering A* replanning to maintain a collision-free route to the goal.
+
+---
+
 ## Project Objectives
 
 - Generate a 2D occupancy-grid environment for autonomous navigation.
