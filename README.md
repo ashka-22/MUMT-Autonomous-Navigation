@@ -241,6 +241,14 @@ MUMT_PROJECT/
 │   ├── occupancy_grid_real.npy
 │   └── replanned_path.npy
 │
+├── results/
+│   ├── 01_occupancy_grid.png
+│   ├── 02_a_star_path.png
+│   ├── 03_dead_reckoning.png
+│   ├── 04_kalman_filter.png
+│   ├── 05_dynamic_replanning.png
+│   └── 06_mumt_navigation.gif
+│
 ├── src/
 │   ├── animation.py
 │   ├── kalman_filter.py
