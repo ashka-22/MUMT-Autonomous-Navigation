@@ -6,6 +6,16 @@ The project demonstrates how a robot can navigate through a partially occupied e
 
 ---
 
+## 🎬 Project Demonstration
+
+### End-to-End Autonomous Navigation
+
+![MUM-T Autonomous Navigation](results/mumt_navigation.gif)
+
+*The animation demonstrates occupancy-grid navigation, A* global planning, robot localization, Kalman filtering, dynamic obstacle detection, sequential replanning, and goal completion.*
+
+---
+
 ## Project Objectives
 
 - Generate a 2D occupancy-grid environment for autonomous navigation.
