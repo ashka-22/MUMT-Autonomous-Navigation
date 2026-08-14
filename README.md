@@ -1,4 +1,4 @@
-# Simulation-Based Autonomous Navigation for MUM-T Scenarios
+# GPS-Denied Navigation & Dynamic Replanning Simulation for MUM-T Scenarios
 
 ### A* Path Planning • Kalman-Based Localization • Dynamic Obstacle Replanning
 
